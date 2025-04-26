@@ -1,0 +1,39 @@
+# c:\Programação\Aplicação-web\Site para contexto por zip\Dockerfile.laravel-filament-base
+# Usar a imagem base oficial do Sail com PHP 8.3 e Composer/Node
+FROM laravelsail/php83-composer:latest
+
+# Argumentos para UID/GID (para compatibilidade com Sail)
+ARG UID
+ARG GID
+
+# Mudar para root para instalar pacotes
+USER root
+
+# Instalar dependências do sistema: cliente mysql, git, unzip (úteis)
+# Opcional: vim/nano para debug
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    git \
+    unzip \
+    vim \
+    default-mysql-client \
+    # Limpar cache
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar extensões PHP adicionais, se necessário (verificar se já não estão na base)
+# A imagem base do Sail já inclui muitas extensões comuns (gd, intl, bcmath, exif, sockets, pdo_mysql, redis, zip etc.)
+# Descomente e adicione apenas se precisar de algo específico que não esteja presente:
+# RUN install-php-extensions nome-da-extensao
+
+# Voltar para o usuário 'sail' padrão do Sail
+USER sail
+
+# Diretório de trabalho padrão
+WORKDIR /var/www/html
+
+# Expor porta do PHP-FPM
+EXPOSE 9000
+
+# Comando padrão (geralmente sobrescrito pelo docker-compose do Sail)
+CMD ["php-fpm"]

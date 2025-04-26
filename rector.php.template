@@ -1,0 +1,47 @@
+// c:\Programação\Aplicação-web\Templates-Laravel\rector.php.template
+<?php
+
+declare(strict_types=1);
+
+use Rector\Config\RectorConfig;
+use Rector\Set\ValueObject\LevelSetList;
+use Rector\Set\ValueObject\SetList;
+use RectorLaravel\Set\LaravelSetList;
+
+return static function (RectorConfig $rectorConfig): void {
+    $rectorConfig->paths([
+        __DIR__ . '/app',
+        __DIR__ . '/bootstrap',
+        __DIR__ . '/config',
+        __DIR__ . '/database',
+        // __DIR__ . '/public', // Geralmente não se aplica Rector ao public
+        __DIR__ . '/resources',
+        __DIR__ . '/routes',
+        __DIR__ . '/tests',
+    ]);
+
+    // Define conjuntos de regras
+    $rectorConfig->sets([
+        SetList::DEAD_CODE,
+        LevelSetList::UP_TO_PHP_83, // <<< ATUALIZADO para PHP 8.3
+        LaravelSetList::LARAVEL_110,
+        // Descomente conjuntos adicionais conforme necessário:
+        // LaravelSetList::LARAVEL_CODE_QUALITY,
+        // LaravelSetList::LARAVEL_ELOQUENT_MAGIC_METHOD_TO_QUERY_BUILDER,
+        // SetList::CODE_QUALITY,
+        // SetList::CODING_STYLE, // Cuidado: Pode conflitar com Pint
+        // SetList::TYPE_DECLARATION,
+        // SetList::EARLY_RETURN,
+        // SetList::NAMING,
+    ]);
+
+    // Pular regras ou paths específicos
+    // $rectorConfig->skip([
+    //     \Rector\CodeQuality\Rector\Class_\InlineConstructorDefaultToPropertyRector::class,
+    //     __DIR__ . '/app/Http/Middleware/RedirectIfAuthenticated.php',
+    // ]);
+
+    // Importar nomes automaticamente? (ex: `Request` em vez de `Illuminate\Http\Request`)
+    $rectorConfig->importNames();
+    $rectorConfig->importShortClasses(false); // Evita importar classes curtas como `Auth` globalmente
+};
